@@ -1,0 +1,449 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>投影模拟</title>
+
+<style>
+.light_height{
+    display: flex;
+    vertical-align:middle;
+    margin-top: 20px;
+    }
+.light_distance{
+    display: flex;
+    margin-top: 20px;
+}
+.shadow_color{
+    display: flex;
+    vertical-align:middle;
+    margin-top: 20px;
+    line-height: 48px;
+}
+.card_color{
+	display: flex;
+    vertical-align:middle;
+    margin-top: 20px;
+    line-height: 48px;
+}
+.box {
+	width:300px;
+	height:48px;
+	position:relative;
+}
+.wire {
+	width:300px;
+	height:16px;
+	position:absolute;
+	left:50%;
+	top:50%;
+	margin-left:-150px;
+	margin-top:-8px;
+	background-color:#f5f6f7;
+    border-radius: 10px;
+}
+#piece1 {
+	width:30px;
+	height:30px;
+	position:absolute;
+	left:100%;
+	top:50%;
+	margin-top:-15px;
+	background-color:white;
+    /*box-shadow: 0px 0px 4px rgba(0,0,0,0.2);*/
+    box-shadow: 0px 0px 0px 4px #0170fe;
+	z-index:1;
+	border-radius:50%;
+    color:#0170fe;
+    font-size: 14px;
+    line-height: 30px;
+    text-align: center;
+    user-select:none;
+}
+#piece2 {
+    width:30px;
+    height:30px;
+    position:absolute;
+    left:0%;
+    top:50%;
+    margin-top:-15px;
+    background-color:white;
+    /*box-shadow: 0px 0px 4px rgba(0,0,0,0.2);*/
+    box-shadow: 0px 0px 0px 4px #0170fe;
+    z-index:1;
+    border-radius:50%;
+    color:#0170fe;
+    font-size: 14px;
+    line-height: 30px;
+    text-align: center;
+    user-select:none;
+}
+#piece3 {
+    width:30px;
+    height:30px;
+    position:absolute;
+    left:0%;
+    top:50%;
+    margin-top:-15px;
+    background-color:white;
+    /*box-shadow: 0px 0px 4px rgba(0,0,0,0.2);*/
+    box-shadow: 0px 0px 0px 4px #0170fe;
+    z-index:1;
+    border-radius:50%;
+    color:#0170fe;
+    font-size: 14px;
+    line-height: 30px;
+    text-align: center;
+    user-select:none;
+}
+.piece:hover{
+    cursor:pointer;
+    /*transform:scale(1.05);
+    transition: transform 0.2s ease;*/
+}
+#color1 {
+	width:100%;
+	height:16px;
+	background-color:#0170fe;
+	position:absolute;
+	left:0;
+	top:0;
+    border-radius: 10px 0px 0px 10px;
+}
+#color2 {
+    width:0%;
+    height:16px;
+    background-color:#0170fe;
+    position:absolute;
+    left:0;
+    top:0;
+    border-radius: 10px 0px 0px 10px;
+}
+#color3 {
+    width:0%;
+    height:16px;
+    background-color:#0170fe;
+    position:absolute;
+    left:0;
+    top:0;
+    border-radius: 10px 0px 0px 10px;
+}
+.title {
+    width: 100px;
+	color:#333;
+	font-weight:500;
+    margin-bottom: 0px;
+}
+.card{
+        width: 72px;
+        height:72px;
+        border-radius: 12px;
+        padding: 12px;
+        /*box-shadow: 0px 0px 4px rgba(0,0,0,0.1);*/
+        line-height: 24px;/*让div中的文字内容垂直居中*/
+        text-align: center;
+        margin-right: 60px;
+        font-size: 14px;
+        color:#333;
+
+    }
+.input{
+        padding: 10px 12px;
+        border: 1px solid #f5f6f7;
+        border-radius: 9px;
+        width: 100px;
+        font-family: "Poppins", sans-serif;
+        font-size: 14px;
+        background-color: #f5f6f7;
+        margin-left: 10px;
+
+        
+    }
+    
+    .input:hover{
+        outline:none;
+        box-shadow:  0 0 0 3px #BDE7FF;
+        border: 1px solid #EEEEEE;
+    }
+    .input:focus{
+        outline:none;
+        box-shadow:  0 0 0 1px #42A7FF,0 0 0 3px #BDE7FF;
+        border: 1px solid #EEEEEE;
+    }
+</style>
+</head>
+<body style="margin: 40px 0 0 40px;">
+    <div class="card_color">
+        <div class="title" style="line-height: 48px;">卡片颜色</div>
+        #<input class="input" id='c0' type="text" size='6' placeholder="十六进制色值" maxlength="6" onblur="max6()" value="FFFFFF">
+        <div id='c1' style="line-height: 48px; margin-left: 20px; color:#333; font-size: 14px;">默认为#FFFFFF</div>
+    </div>
+    <div class="shadow_color">
+        <div class="title" style="line-height: 48px;">阴影颜色</div>
+        #<input class="input" id='d0' type="text" size='6' placeholder="十六进制色值" maxlength="6" onblur="max6()" value="000000">
+        <div id='d1' style="line-height: 48px; margin-left: 20px; color:#333; font-size: 14px;">默认为#000000</div>
+    </div>
+
+
+    <div class="light_height">
+        <div class="title" style="line-height: 48px;">透明度</div>    
+        <div id="box1" class="box slide_box1">
+            <div id="wire1" class="wire slide_wire1">
+                <div id="piece1" class="piece slide_piece1">100</div>
+                <div id="color1" class="color slide_color1"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="light_height">
+        <div class="title" style="line-height: 48px;">光源高度</div>    
+        <div id="box2" class="box slide_box2">
+            <div id="wire2" class="wire slide_wire2">
+                <div id="piece2" class="piece slide_piece2">0</div>
+                <div id="color2" class="color slide_color2"></div>
+            </div>
+        </div>
+    </div>
+
+     <div class="light_distance">
+        <div class="title" style="line-height: 48px;">光源偏移</div>    
+        <div id="box3" class="box slide_box3">
+            <div id="wire3" class="wire slide_wire3">
+                <div id="piece3" class="piece slide_piece3">0</div>
+                <div id="color3" class="color slide_color3"></div>
+            </div>
+        </div>
+    </div>
+    
+
+    
+
+<div style="display: flex; margin: 40px 40px 40px 0px;">
+    <div id="card1" class="card">h:3pt</br>模糊-</br>Y:-</br></div>
+    <div id="card2" class="card">h:6pt</br>模糊-</br>Y:-</br></div>
+    <div id="card3" class="card">h:9pt</br>模糊-</br>Y:-</br></div>
+    <div id="card4" class="card">h:12pt</br>模糊-</br>Y:-</br></div>
+    <div id="card5" class="card">h:15pt</br>模糊-</br>Y:-</br></div>
+    <div id="card6" class="card">h:18pt</br>模糊-</br>Y:-</br></div>
+</div>
+
+
+
+<script>
+var input1 = document.getElementById('d0');
+var input2 = document.getElementById('c0');
+var div1 = document.getElementById('d1');
+var div2 = document.getElementById('c1');
+
+input1.oninput = function(){
+
+    div1.innerHTML =" ";//+ input.value;
+}
+
+input2.oninput = function(){
+	div2.innerHTML = " ";
+}
+
+function ss(){
+        var o = document.getElementById('piece1').innerText;
+        var h = document.getElementById('piece2').innerText;
+        var s = document.getElementById('piece3').innerText;
+
+        var a1 = h-3;
+        var a2 = h-6;
+        var a3 = h-9;
+        var a4 = h-12;
+        var a5 = h-15;
+        var a6 = h-18;
+
+        s1 = s*3*1/a1;
+        s2 = s*3*2/a2;
+        s3 = s*3*3/a3;
+        s4 = s*3*4/a4;
+        s5 = s*3*5/a5;
+        s6 = s*3*6/a6;
+
+        var blur1 = 150*1/a1;
+        var blur2 = 150*2/a2;
+        var blur3 = 150*3/a3;
+        var blur4 = 150*4/a4;
+        var blur5 = 150*5/a5;
+        var blur6 = 150*6/a6;
+
+        var c = "#"+document.getElementById('d0').value;
+        var d = "#"+document.getElementById('c0').value;
+
+        var cc = 'rgba('+colorRgba(c) +','+ o/100 + ')';
+
+
+
+        card1.style.cssText = "box-shadow: 0 "+s1+"px "+blur1+"px " + cc+"; background-color:"+d;
+        card2.style.cssText = "box-shadow: 0 "+s2+"px "+blur2+"px " + cc+"; background-color:"+d;
+        card3.style.cssText = "box-shadow: 0 "+s3+"px "+blur3+"px " + cc+"; background-color:"+d;
+        card4.style.cssText = "box-shadow: 0 "+s4+"px "+blur4+"px " + cc+"; background-color:"+d;
+        card5.style.cssText = "box-shadow: 0 "+s5+"px "+blur5+"px " + cc+"; background-color:"+d;
+        card6.style.cssText = "box-shadow: 0 "+s6+"px "+blur6+"px " + cc+"; background-color:"+d;
+
+
+
+        document.getElementById("card1").innerHTML = "h:3pt</br>模糊"+Math.round(blur1)+"</br>"+"Y:"+Math.round(s1);
+        document.getElementById("card2").innerHTML = "h:6pt</br>模糊"+Math.round(blur2)+"</br>"+"Y:"+Math.round(s2);
+        document.getElementById("card3").innerHTML = "h:9pt</br>模糊"+Math.round(blur3)+"</br>"+"Y:"+Math.round(s3);
+        document.getElementById("card4").innerHTML = "h:12pt</br>模糊"+Math.round(blur4)+"</br>"+"Y:"+Math.round(s4);
+        document.getElementById("card5").innerHTML = "h:15pt</br>模糊"+Math.round(blur5)+"</br>"+"Y:"+Math.round(s5);
+        document.getElementById("card6").innerHTML = "h:18pt</br>模糊"+Math.round(blur6)+"</br>"+"Y:"+Math.round(s6);
+    }
+
+function max6(){
+    
+    if(document.getElementById("d0").value.length > 6 ||document.getElementById("d0").value.length < 6){
+        document.getElementById("d1").innerHTML = "输入错误";
+        d1.style.color = "red";
+    }else{
+        document.getElementById("d1").innerHTML = "正确";
+        d1.style.color = "green";
+        ss();
+    }
+    if(document.getElementById("c0").value.length > 6 ||document.getElementById("c0").value.length < 6){
+        document.getElementById("c1").innerHTML = "输入错误";
+        c1.style.color = "red";
+    }else{
+        document.getElementById("c1").innerHTML = "正确";
+        c1.style.color = "green";
+    }
+}
+
+function colorRgba(sHex) {
+        // 十六进制颜色值的正则表达式
+        var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{4}|[0-9a-fA-f]{6}|[0-9a-fA-f]{8})$/
+        /* 16进制颜色转为RGB格式 */
+        var sColor = sHex.toLowerCase()
+        var alpha = 1 
+        if (sColor && reg.test(sColor)) {
+            if (sColor.length === 4 || sColor.length === 5) {
+                var sColorNew = '#'
+                for (var i = 1; i < sColor.length; i += 1) {
+                    sColorNew += sColor.slice(i, i + 1).concat(sColor.slice(i, i + 1))
+                }
+                sColor = sColorNew
+            }
+            // 如果有透明度再执行
+            if (sColor.length === 9) {
+                alpha = (parseInt('0x' + sColor.slice(7, 9))/255).toFixed(2)
+            }
+            //  处理六位的颜色值
+            var sColorChange = []
+            for (var i = 1; i < 7; i += 2) {
+                sColorChange.push(parseInt('0x' + sColor.slice(i, i + 2)))
+            }
+            return sColorChange.join(',')
+        } else {
+            return sColor
+        }
+
+    }
+    
+function Pdd(box, wire, piece, color, value) {
+    var bool = true;
+    var box = document.querySelector("." + box) //|| document.querySelector("#" + box);
+    var wire = document.querySelector("." + wire) //|| document.querySelector("#" + wire);
+    var piece = document.querySelector("." + piece)// || document.querySelector("#" + piece);
+    var color = document.querySelector("." + color)// || document.querySelector("#" + color);
+    var value = document.querySelector("." + value)// || document.querySelector("#" + value);
+
+    function slider1(ev){
+        var ev = ev || window.event;
+        let Coords = ev.clientX - box.offsetLeft;
+        let W = wire.offsetWidth;
+        if (Coords > W) Coords = W;
+        if (Coords < 0) Coords = 0;
+        piece1.style.left =Math.round(Coords/3)*3 + "px";
+        color1.style.width =Math.round(Coords/3)*3 + "px";
+        let ratio = Math.round(Coords / W * 100);
+        
+        piece1.innerText =ratio;
+    }
+
+    function slider2(ev){
+        var ev = ev || window.event;
+        let Coords = ev.clientX - box.offsetLeft;
+        let W = wire.offsetWidth;
+        if (Coords > W) Coords = W;
+        if (Coords < 0) Coords = 0;
+        piece2.style.left =Math.round(Coords/3)*3 + "px";
+        color2.style.width =Math.round(Coords/3)*3 + "px";
+        let ratio2 = Math.round(Coords / W * 100);
+        
+        piece2.innerText =ratio2;
+    }
+
+    function slider3(ev){
+        var ev = ev || window.event;
+        let Coords = ev.clientX - box.offsetLeft;
+        let W = wire.offsetWidth;
+        if (Coords > W) Coords = W;
+        if (Coords < 0) Coords = 0;
+        piece3.style.left = Math.round(Coords/6)*6 + "px";
+        color3.style.width = Math.round(Coords/6)*6 + "px";
+        let ratio3 = Math.round(Coords / W * 50);
+        
+        piece3.innerText =ratio3;
+    }
+
+
+    
+    piece1.onmousedown = function() {
+        bool = true;
+        box1.onmousemove = function() {
+            //获取事件对象
+            if (bool == true) {
+                slider1();
+                ss();
+            }
+
+            document.onmouseup = function() {
+                bool = false;
+            }
+        }     
+    }
+
+    piece2.onmousedown = function() {
+        bool = true;
+        box2.onmousemove = function() {
+            //获取事件对象
+            if (bool == true) {
+                slider2();
+                ss();
+            }
+
+            document.onmouseup = function() {
+                bool = false;
+            }
+        }     
+    }
+
+    piece3.onmousedown = function() {
+        bool = true;
+        box3.onmousemove = function() {
+            //获取事件对象
+            if (bool == true) {
+                slider3();
+                ss();
+            }
+
+            document.onmouseup = function() {
+                bool = false;
+            }
+        }     
+    }
+    
+}
+    
+Pdd("slide_box1", "slide_wire1", "slide_piece1", "slide_color1", "slide_value1");
+Pdd("slide_box2", "slide_wire2", "slide_piece2", "slide_color2", "slide_value2");
+Pdd("slide_box3", "slide_wire3", "slide_piece3", "slide_color3", "slide_value3");
+
+
+</script>
+</body>
+</html>
